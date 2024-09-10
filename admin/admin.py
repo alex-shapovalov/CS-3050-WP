@@ -12,7 +12,7 @@ def main():
             # https://stackoverflow.com/questions/66370426/best-way-to-send-json-data-from-api-to-firestore-with-python
             doc_ref = cereal_database.collection('Cereal').document(field["name"])
             doc_ref.set(field)
-        print("Successfully cereal added data into Firestore")
+        print("Successfully loaded cereal data into Firestore")
     except Exception as error:
         print(f"Failed: {error}")
 
