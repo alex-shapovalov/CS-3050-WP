@@ -1,9 +1,13 @@
-import firebase-admin
-from firebase-admin import credentials
-from firebase-admin import firestore
+from config import init
 
-KEY = credentials.Certificate('./cereal-64ada-firebase-adminsdk-mksnj-b1c782e878.json')
-firebase-admin.initialize_app(KEY,{
-    'projectID': 'cereal-64ada'
+cereal_database = init()
+
+cereal_data = {
+    'test' : 'test',
 }
-)
+
+try:
+    cereal_database.collection("Cereal").add(cereal_data)
+    print("Done")
+except Exception as error:
+    print(f"Failed {error}")
