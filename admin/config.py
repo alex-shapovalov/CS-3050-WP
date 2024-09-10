@@ -3,10 +3,7 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 
 def init():
-    KEY = credentials.Certificate('./cereal-64ada-firebase-adminsdk-mksnj-b1c782e878.json')
-
-    firebase_admin.initialize_app(KEY,{
-        'projectId': 'cereal-64ada'
-    })
+    cred = credentials.Certificate("./cereal-64ada-firebase-adminsdk-mksnj-049fd500df.json")
+    firebase_admin.initialize_app(cred)
 
     return firestore.client()
