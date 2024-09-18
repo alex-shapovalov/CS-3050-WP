@@ -1,5 +1,6 @@
 from parser import Parser
 from parser import ParseError
+from query import query_parser
 
 class CerealParser(Parser):
     def start(self):
@@ -108,13 +109,18 @@ class CerealParser(Parser):
 if __name__ == '__main__':
     parser = CerealParser()
 
+    user_input = ''
     while True:
         try:
-            print(parser.parse(input('> ')))
+            user_input = input('> ')
+            if user_input == 'exit':
+                break
+            query_parser(parser.parse(user_input))
         except KeyboardInterrupt:
             print()
         except (EOFError, SystemExit):
             print()
-            break
         except (ParseError, ZeroDivisionError) as e:
             print('Error: %s' % e)
+
+    print('Program exited successfully')
