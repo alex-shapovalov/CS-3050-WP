@@ -5,7 +5,7 @@ class CerealParser(Parser):
     def start(self):
         return self.expression()
 
-    # return list of tuples  [(,,),(,,)]
+    # returns list of dicts of querys joined by ands (query1,query2...)
     def expression(self):
         rv = []
         rv.append(self.match('constraint'))
@@ -19,20 +19,22 @@ class CerealParser(Parser):
             rv.append(term)
 
         return rv
-# calories >= 140
-# fiber of "Cherios"   (name, ==, "cherios") select fiber
-    # returns tuple (attribute, operator, number/name)
+    
+    # returns dict of query (attribute=, operator=, number_name=, return_value=)
     def constraint(self):
         query = {}
 
+        #check if given attribute is a valid one
         query["attribute"] = self.match('attribute')
 
+        #deals with special case of manufacter. operator has to be of == or !=
         if query["attribute"] == "manufacturer":
             op = self.keyword('of','==','!=')
         else:
             op = self.keyword('>=','<=','of','>','<','==','!=')
         
 
+        #of opperator is similar to ==, ie 'fiber of cherios' = '(name = cherios) select fiber'
         if op == 'of':
             query["operator"] = '=='
             number_name = self.name()
@@ -40,6 +42,7 @@ class CerealParser(Parser):
             query["return_value"] = query["attribute"]
             query["attribute"] = "name"
 
+        #comparrison operators
         elif op in ['>','<','>=','<=','==','!=']:
             query["operator"] = op
             if query["attribute"] == "manufacturer":
@@ -50,11 +53,13 @@ class CerealParser(Parser):
             query["number_name"] = number_name
             query["return_value"] = "name"
 
-
-
         return query
 
-    
+    #if input is an attribute returns the attribute, otherwise throws error and tells user
+    def attribute(self):
+        return self.keyword("calories", "cups", "fiber", "manufacturer", "sugars", "rating")
+
+    #returns name if surounded by '' returns name, otherwise throws error and tells user
     def name(self):
         chars = []
         char = (self.char('"'))
@@ -70,15 +75,10 @@ class CerealParser(Parser):
         rv = ''.join(chars)
         return rv
 
-    def attribute(self):
-        return self.keyword("calories", "cups", "fiber", "manufacturer", "sugars", "rating")
 
-
-
+    #if input is a number (can include decimal) returns nubmer, otherwise throws error and tells user
     def number(self):
         chars = []
-
-
 
         chars.append(self.char('0-9'))
 
