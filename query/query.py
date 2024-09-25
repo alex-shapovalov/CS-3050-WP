@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(1, '.')
+
 from admin.config import init
 from google.cloud.firestore_v1.base_query import FieldFilter, BaseCompositeFilter
 from google.cloud.firestore_v1.types import StructuredQuery
