@@ -2,7 +2,7 @@ from google.cloud.firestore_v1.base_query import FieldFilter, BaseCompositeFilte
 from google.cloud.firestore_v1.types import StructuredQuery
 
 def query_parser(query_list, cereal_database):
-    # try:
+    try:
         # Access database collection
         query_ref = cereal_database.collection('Cereal')
 
@@ -85,3 +85,6 @@ def query_parser(query_list, cereal_database):
 
         else:
             print("Error: Query contains two many elements (probably using more than 1 \'AND\')")
+
+    except Exception as error:
+        print(f"Error: {error}")
