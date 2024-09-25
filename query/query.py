@@ -1,6 +1,7 @@
-from admin.config import init
 from google.cloud.firestore_v1.base_query import FieldFilter, BaseCompositeFilter
 from google.cloud.firestore_v1.types import StructuredQuery
+
+database = False
 
 def build_query(query_ref, query_list):
     # If there is only one condition in the query list, process normally
@@ -40,12 +41,8 @@ def build_query(query_ref, query_list):
 
             return query_ref.where(filter=composite_filter)
 
-def query_parser(query_list):
+def query_parser(query_list, cereal_database):
     print(f"Received Query List: {query_list}")
-
-    # Initialize database
-    cereal_database = init()
-    print(f"Cereal Database Initialized: {cereal_database}")
 
     try:
         # Access database collection
@@ -55,6 +52,10 @@ def query_parser(query_list):
 
         docs = completed_query.get()
         print(str(docs))
+
+        # Print the query results
+        for doc in docs:
+            print(doc.id, doc.to_dict())
 
     except Exception as error:
         print(f"Error: {error}")
