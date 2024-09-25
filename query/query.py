@@ -13,7 +13,7 @@ def build_query(query_ref, query_list):
 
         print(f"Processing query: {attribute} {operator} {number_name}")
 
-        field_filter = FieldFilter(attribute, operator, float(number_name))
+        field_filter = FieldFilter(attribute, operator, number_name)
 
         return query_ref.where(filter=field_filter)
 

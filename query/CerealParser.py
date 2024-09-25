@@ -1,3 +1,6 @@
+import sys
+sys.path.append('.')
+
 from parser import Parser
 from parser import ParseError
 from query import query_parser
