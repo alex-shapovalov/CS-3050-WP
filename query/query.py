@@ -6,6 +6,7 @@ def query_parser(query_list, cereal_database):
         # Access database collection
         query_ref = cereal_database.collection('Cereal')
 
+        # If we aren't dealing with an "AND" statement
         if len(query_list) == 1:
             query = query_list[0]
             attribute = query.get('attribute')
@@ -17,7 +18,7 @@ def query_parser(query_list, cereal_database):
 
             completed_query = query_ref.where(filter=field_filter)
 
-            # "of" queries must be handled differently
+            # "OF" queries must be handled differently
             if attribute == "name":
                 completed_query = completed_query.select([return_value])
             else:
@@ -28,7 +29,7 @@ def query_parser(query_list, cereal_database):
             for doc in docs:
                 print(doc.id, doc.to_dict())
 
-        # If there are multiple conditions, tie them together with AND's
+        # Hardcoded "AND"s to only work with a singular "AND"
         elif len(query_list) == 2:
             query_one = query_list[0]
             attribute_one = query_one.get('attribute')
@@ -47,22 +48,25 @@ def query_parser(query_list, cereal_database):
 
             completed_query_exists = False
 
+            # If both are "OF" statements
             if attribute_one == "name" and attribute_two == "name":
                 completed_query_one = query_ref.where(filter = field_filter_one).select([return_value_one])
                 completed_query_two = query_ref.where(filter = field_filter_two).select([return_value_two])
 
+            # If one is an "OF" statement
             elif attribute_one == "name":
                 completed_query_one = query_ref.where(filter = field_filter_one).select([return_value_one])
                 completed_query_two = query_ref.where(filter = field_filter_two)
 
+            # If one is an "OF" statement
             elif attribute_two == "name":
                 completed_query_one = query_ref.where(filter = field_filter_one)
                 completed_query_two = query_ref.where(filter = field_filter_two).select([return_value_two])
 
+            # Neither is an "OF" statement, run a normal "AND" query
             else:
                 completed_query = query_ref.where(filter=field_filter_one).where(filter=field_filter_two)
                 completed_query_exists = True
-
 
             if completed_query_exists == True:
                 docs = completed_query.get()
@@ -81,6 +85,3 @@ def query_parser(query_list, cereal_database):
 
         else:
             print("Error: Query contains two many elements (probably using more than 1 \'AND\')")
-
-    # except Exception as error:
-    #     print(f"Error: {error}")
