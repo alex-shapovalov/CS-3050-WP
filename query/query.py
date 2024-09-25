@@ -25,7 +25,7 @@ def query_parser(query_list, cereal_database):
                 pass
 
         # If there are multiple conditions, tie them together with AND's
-        if len(query_list) == 2:
+        elif len(query_list) == 2:
             query_one = query_list[0]
             attribute_one = query_one.get('attribute')
             operator_one = query_one.get('operator')
