@@ -117,8 +117,16 @@ if __name__ == '__main__':
     user_input = ''
     while True:
         try:
+
             user_input = input('> ')
-            if user_input == 'exit':
+            if user_input.lower() == 'help':
+                print("This program allows you to query cereal data. You can query by attributes such as 'calories' (int), 'cups' (int), 'fiber' (int), 'manufacturer' (string), 'sugars' (int), 'rating' (int). Use operators like '==', '>', '<', '>=' , '<=' , '!=' , 'of' to compare values. When entering a string it must be inside of double quotes. Example queries:\n"
+                      "- calories > 100\n"
+                      '- fiber of "Cheerios"\n'
+                      "- sugars <= 5")
+                continue  # Go back to the loop for more input
+
+            if user_input.lower() == 'exit':
                 break
             query_parser(parser.parse(user_input), cereal_database)
         except KeyboardInterrupt:
