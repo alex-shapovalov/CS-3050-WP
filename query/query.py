@@ -5,7 +5,6 @@ def query_parser(query_list, cereal_database):
     # try:
         # Access database collection
         query_ref = cereal_database.collection('Cereal')
-        print(str(query_list))
 
         if len(query_list) == 1:
             query = query_list[0]
@@ -24,6 +23,11 @@ def query_parser(query_list, cereal_database):
             else:
                 pass
 
+            docs = completed_query.get()
+
+            for doc in docs:
+                print(doc.id, doc.to_dict())
+
         # If there are multiple conditions, tie them together with AND's
         elif len(query_list) == 2:
             query_one = query_list[0]
@@ -41,27 +45,42 @@ def query_parser(query_list, cereal_database):
             field_filter_one = FieldFilter(attribute_one, operator_one, number_name_one)
             field_filter_two = FieldFilter(attribute_two, operator_two, number_name_two)
 
+            completed_query_exists = False
+
             if attribute_one == "name" and attribute_two == "name":
-                completed_query = query_ref.where(filter=field_filter_one).select([return_value_one]).where(filter=field_filter_two).select([return_value_two])
+                completed_query_one = query_ref.where(filter = field_filter_one).select([return_value_one])
+                completed_query_two = query_ref.where(filter = field_filter_two).select([return_value_two])
 
-            elif attribute_one == "name" and attribute_two != "name":
-                completed_query = query_ref.where(filter=field_filter_one).select([return_value_one]).where(filter=field_filter_two)
+            elif attribute_one == "name":
+                completed_query_one = query_ref.where(filter = field_filter_one).select([return_value_one])
+                completed_query_two = query_ref.where(filter = field_filter_two)
 
-            elif attribute_one != "name" and attribute_two == "name":
-                completed_query = query_ref.where(filter=field_filter_one).where(filter=field_filter_two).select([return_value_two])
+            elif attribute_two == "name":
+                completed_query_one = query_ref.where(filter = field_filter_one)
+                completed_query_two = query_ref.where(filter = field_filter_two).select([return_value_two])
 
             else:
                 completed_query = query_ref.where(filter=field_filter_one).where(filter=field_filter_two)
+                completed_query_exists = True
 
-            # "of" queries must be handled differently
+
+            if completed_query_exists == True:
+                docs = completed_query.get()
+
+                for doc in docs:
+                    print(doc.id, doc.to_dict())
+
+            else:
+                docs_one = completed_query_one.get()
+                for doc in docs_one:
+                    print(doc.id, doc.to_dict())
+
+                docs_two = completed_query_two.get()
+                for doc in docs_two:
+                    print(doc.id, doc.to_dict())
 
         else:
             print("Error: Query contains two many elements (probably using more than 1 \'AND\')")
-
-        docs = completed_query.get()
-
-        for doc in docs:
-            print(doc.id, doc.to_dict())
 
     # except Exception as error:
     #     print(f"Error: {error}")
